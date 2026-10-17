@@ -1,0 +1,167 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Edit Client | ClientFlow CRM</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        .edit-page {
+            max-width: 750px;
+            margin: 40px auto;
+            padding: 24px;
+        }
+
+        .edit-card {
+            background: white;
+            padding: 28px;
+            border-radius: 14px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.07);
+        }
+
+        .edit-card h1 {
+            margin-top: 0;
+        }
+
+        .edit-card p {
+            color: #777;
+        }
+
+        .edit-form {
+            display: grid;
+            gap: 18px;
+        }
+
+        .form-group {
+            display: grid;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+        }
+
+        .form-group input {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .save-btn,
+        .cancel-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .save-btn {
+            background: #4f46e5;
+            color: white;
+        }
+
+        .cancel-btn {
+            background: #eee;
+            color: #333;
+        }
+
+        @media (max-width: 600px) {
+            .edit-page {
+                margin: 15px auto;
+                padding: 14px;
+            }
+
+            .edit-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="edit-page">
+        <a href="{{ url_for('clients_page') }}">
+            ← Back to Clients
+        </a>
+
+        <section class="edit-card" style="margin-top: 24px;">
+            <h1>Edit Client</h1>
+            <p>Update the client information below.</p>
+
+            <form class="edit-form"
+                  action="{{ url_for('edit_client', client_id=client['id']) }}"
+                  method="POST">
+
+                <div class="form-group">
+                    <label for="name">Client Name *</label>
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value="{{ client['name'] or '' }}"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value="{{ client['email'] or '' }}"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input
+                        type="text"
+                        id="phone"
+                        name="phone"
+                        value="{{ client['phone'] or '' }}"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="company">Company Name</label>
+                    <input
+                        type="text"
+                        id="company"
+                        name="company"
+                        value="{{ client['company'] or '' }}"
+                    >
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="save-btn">
+                        Save Changes
+                    </button>
+
+                    <a href="{{ url_for('clients_page') }}"
+                       class="cancel-btn">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </section>
+    </main>
+</body>
+</html>

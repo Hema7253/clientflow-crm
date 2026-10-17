@@ -1,0 +1,224 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Project | ClientFlow CRM</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        .edit-page {
+            max-width: 800px;
+            margin: 35px auto;
+            padding: 24px;
+        }
+
+        .back-link {
+            color: #4f46e5;
+            text-decoration: none;
+        }
+
+        .edit-card {
+            background: white;
+            padding: 28px;
+            margin-top: 22px;
+            border-radius: 14px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+        }
+
+        .edit-card h1 {
+            margin-top: 0;
+        }
+
+        .description {
+            color: #777;
+            margin-bottom: 25px;
+        }
+
+        .edit-form {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            border: 1px solid #d9dce3;
+            border-radius: 8px;
+            background: white;
+            font-size: 14px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .save-btn,
+        .cancel-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .save-btn {
+            color: white;
+            background: #4f46e5;
+        }
+
+        .cancel-btn {
+            background: #eeeeee;
+            color: #333333;
+        }
+
+        @media (max-width: 600px) {
+            .edit-page {
+                margin: 15px auto;
+                padding: 14px;
+            }
+
+            .edit-card {
+                padding: 20px;
+            }
+
+            .edit-form {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width {
+                grid-column: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="edit-page">
+        <a class="back-link"
+           href="{{ url_for('projects_page') }}">
+            ← Back to Projects
+        </a>
+
+        <section class="edit-card">
+            <h1>Edit Project</h1>
+            <p class="description">
+                Update your project information below.
+            </p>
+
+            <form
+                class="edit-form"
+                action="{{ url_for('edit_project', project_id=project['id']) }}"
+                method="POST"
+            >
+                <div class="form-group">
+                    <label for="project_name">Project Name *</label>
+                    <input
+                        type="text"
+                        id="project_name"
+                        name="project_name"
+                        value="{{ project['project_name'] or '' }}"
+                        maxlength="150"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="client_id">Client *</label>
+                    <select id="client_id" name="client_id" required>
+                        <option value="">Select Client</option>
+
+                        {% for client in clients %}
+                        <option
+                            value="{{ client['id'] }}"
+                            {% if client['id'] == project['client_id'] %}selected{% endif %}
+                        >
+                            {{ client['name'] }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="budget">Budget (₹)</label>
+                    <input
+                        type="number"
+                        id="budget"
+                        name="budget"
+                        min="0"
+                        step="0.01"
+                        value="{{ project['budget'] or 0 }}"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="deadline">Deadline</label>
+                    <input
+                        type="date"
+                        id="deadline"
+                        name="deadline"
+                        value="{{ project['deadline'] or '' }}"
+                    >
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="status">Project Status</label>
+                    <select id="status" name="status" required>
+                        <option value="Active"
+                            {% if project['status'] == 'Active' %}selected{% endif %}>
+                            Active
+                        </option>
+
+                        <option value="Completed"
+                            {% if project['status'] == 'Completed' %}selected{% endif %}>
+                            Completed
+                        </option>
+
+                        <option value="On Hold"
+                            {% if project['status'] == 'On Hold' %}selected{% endif %}>
+                            On Hold
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-actions full-width">
+                    <button type="submit" class="save-btn">
+                        Save Changes
+                    </button>
+
+                    <a href="{{ url_for('projects_page') }}"
+                       class="cancel-btn">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+        </section>
+    </main>
+</body>
+</html>

@@ -1,0 +1,225 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clients | ClientFlow CRM</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+    <style>
+        .clients-page {
+            padding: 30px;
+        }
+
+        .clients-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+
+        .clients-heading h1 {
+            margin: 0 0 8px;
+        }
+
+        .clients-heading p {
+            margin: 0;
+            color: #777;
+        }
+
+        .clients-card {
+            background: white;
+            padding: 24px;
+            border-radius: 14px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+            overflow-x: auto;
+        }
+
+        .clients-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 650px;
+        }
+
+        .clients-table th,
+        .clients-table td {
+            padding: 15px 12px;
+            text-align: left;
+            border-bottom: 1px solid #eeeeee;
+        }
+
+        .clients-table th {
+            color: #666;
+            font-size: 13px;
+            background: #f8fafc;
+        }
+
+        .clients-table td {
+            color: #333;
+        }
+
+        .client-avatar {
+            display: inline-flex;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            background: #e0e7ff;
+            color: #4338ca;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            text-decoration: none;
+            color: #4f46e5;
+        }
+
+        .empty-message {
+            padding: 30px;
+            text-align: center;
+            color: #777;
+        }
+
+        @media (max-width: 600px) {
+            .clients-page {
+                padding: 16px;
+            }
+
+            .clients-card {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="clients-page">
+        <a class="back-link" href="/">← Back to Dashboard</a>
+
+        <div class="clients-heading">
+            <div>
+                <h1>Clients</h1>
+                <p>Manage and view your client information.</p>
+            </div>
+            <div>
+                Total Clients: <strong>{{ clients|length }}</strong>
+            </div>
+        </div>
+
+
+        
+<section class="clients-card" style="margin-bottom: 24px;">
+    <h2>Add New Client</h2>
+
+    <form action="{{ url_for('add_client') }}" method="POST">
+        <div style="display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+            <input
+                type="text"
+                name="name"
+                placeholder="Client Name *"
+                required
+                style="padding: 12px; border: 1px solid #ddd; border-radius: 8px;"
+            >
+
+            <input
+                type="email"
+                name="email"
+                placeholder="Email Address"
+                style="padding: 12px; border: 1px solid #ddd; border-radius: 8px;"
+            >
+
+            <input
+                type="text"
+                name="phone"
+                placeholder="Phone Number"
+                style="padding: 12px; border: 1px solid #ddd; border-radius: 8px;"
+            >
+
+            <input
+                type="text"
+                name="company"
+                placeholder="Company Name"
+                style="padding: 12px; border: 1px solid #ddd; border-radius: 8px;"
+            >
+        </div>
+
+        <button
+            type="submit"
+            style="margin-top: 16px; padding: 12px 22px; background: #4f46e5; color: white; border: none; border-radius: 8px; cursor: pointer;"
+        >
+            + Add Client
+        </button>
+    </form>
+</section>
+
+        <section class="clients-card">
+            <table class="clients-table">
+                <thead>
+                    <tr>
+                        <th>Client</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Company</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for client in clients %}
+                    <tr>
+                        <td>
+                            <span class="client-avatar">
+                                {{ client['name'][0]|upper if client['name'] else '?' }}
+                            </span>
+                            {{ client['name'] }}
+                        </td>
+                        <td>{{ client['email'] or 'Not provided' }}</td>
+                        <td>{{ client['phone'] or 'Not provided' }}</td>
+                        <td>{{ client['company'] or 'Not provided' }}</td>
+                        
+<td>
+
+    
+<a
+    href="{{ url_for('edit_client', client_id=client['id']) }}"
+    style="display: inline-block; background: #e0e7ff; color: #4338ca; padding: 8px 12px; border-radius: 6px; text-decoration: none; margin-right: 6px; margin-bottom: 6px;"
+>
+    Edit
+</a>
+
+    <form
+        action="{{ url_for('delete_client', client_id=client['id']) }}"
+        method="POST"
+        onsubmit="return confirm('Are you sure you want to delete this client?');"
+    >
+        <button
+            type="submit"
+            style="background: #fee2e2; color: #b91c1c; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer;"
+        >
+            Delete
+        </button>
+    </form>
+</td>
+
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="empty-message">
+                            No clients found. Add a client to your database first.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </main>
+</body>
+</html>

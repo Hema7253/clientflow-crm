@@ -1,0 +1,108 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClientFlow CRM | Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <aside class="sidebar">
+        <a href="/" class="brand">Client<span>Flow.</span></a>
+        <p class="nav-heading">WORKSPACE</p>
+        <nav>
+            <a class="nav-link active" href="/">▦ &nbsp; Dashboard</a>
+            <a class="nav-link" href="{{ url_for('projects_page') }}">▤ &nbsp; Projects</a>
+            <a class="nav-link" href="{{ url_for('clients_page') }}">♙ &nbsp; Clients</a>
+        </nav>
+        <div class="sidebar-bottom">Project management<br>made simple.</div>
+    </aside>
+
+    <main class="main">
+        <header class="topbar">
+            <span>WORKSPACE / OVERVIEW</span>
+            <span class="live"><i></i> Live database</span>
+        </header>
+
+        <section class="welcome">
+            <div>
+                <h1>Dashboard</h1>
+                <p>Welcome back! Here's your business overview.</p>
+            </div>
+            <button id="refreshBtn" class="refresh-btn">↻ Refresh data</button>
+        </section>
+
+        <p id="message" class="message">Loading dashboard data...</p>
+
+        <section class="stats">
+            <article class="stat-card">
+                <div class="stat-icon purple">♙</div>
+                <p>Total Clients</p>
+                <h2 id="totalClients">—</h2>
+                <small>Clients in your database</small>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-icon blue">▤</div>
+                <p>Total Projects</p>
+                <h2 id="totalProjects">—</h2>
+                <small>Projects recorded</small>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-icon orange">◷</div>
+                <p>Active Projects</p>
+                <h2 id="activeProjects">—</h2>
+                <small>Currently in progress</small>
+            </article>
+
+            <article class="stat-card">
+                <div class="stat-icon green">✓</div>
+                <p>Completed Projects</p>
+                <h2 id="completedProjects">—</h2>
+                <small>Successfully completed</small>
+            </article>
+        </section>
+
+        <section class="budget-card">
+            <div>
+                <p>Total Project Budget</p>
+                <h2 id="totalBudget">₹0</h2>
+                <small>Combined budget of recorded projects</small>
+            </div>
+            <div class="budget-icon">₹</div>
+        </section>
+
+        <section class="projects-card" id="projects">
+            <div class="section-heading">
+                <div>
+                    <h2>Recent Projects</h2>
+                    <p>Your latest project records from SQLite</p>
+                </div>
+                <span class="live"><i></i> Live database</span>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Project</th>
+                            <th>Client</th>
+                            <th>Status</th>
+                            <th>Budget</th>
+                        </tr>
+                    </thead>
+                    <tbody id="projectsTable">
+                        <tr><td colspan="4" class="empty">Loading projects...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <footer>© 2026 ClientFlow CRM · Built for smarter project management</footer>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+.venv/
+venv/
+
+# Environment variables and secrets
+.env
+.env.*
+
+# IDE settings
+.vscode/
+
+# Database backups
+database_backup*.db
+*.db-journal
+
+# Temporary files
+*.log
+
+# Local database
+database.db
+
+# One-time cleanup script
+cleanup_test_data.py
