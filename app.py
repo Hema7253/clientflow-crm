@@ -7,26 +7,23 @@ from flask import (
     redirect,
     url_for
 )
-import sqlite3
 import os
+import logging
 
-# Import database setup functions
-from database import create_database, add_sample_data
+from database import (
+    get_db_connection,
+    create_database,
+    add_sample_data
+)
 
 
 # --------------------------------------------------
-# PATH CONFIGURATION
+# FLASK CONFIGURATION
 # --------------------------------------------------
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATABASE = os.path.join(BASE_DIR, "database.db")
 STATIC_DIR = os.path.join(BASE_DIR, "static")
 TEMPLATE_DIR = os.path.join(BASE_DIR, "templates")
-
-
-# --------------------------------------------------
-# FLASK APP
-# --------------------------------------------------
 
 app = Flask(
     __name__,
@@ -35,31 +32,21 @@ app = Flask(
     static_url_path="/static"
 )
 
+app.logger.setLevel(logging.INFO)
+
 
 # --------------------------------------------------
 # DATABASE INITIALIZATION
 # --------------------------------------------------
 
-# Create tables if they do not exist.
-# Add demo records only if the database is empty,
-# according to the rules in database.py.
+# DATABASE_URL set aana Neon PostgreSQL use aagum.
+# DATABASE_URL illa na local SQLite use aagum.
 create_database()
 add_sample_data()
 
 
 # --------------------------------------------------
-# DATABASE CONNECTION
-# --------------------------------------------------
-
-def get_db_connection():
-    connection = sqlite3.connect(DATABASE)
-    connection.row_factory = sqlite3.Row
-    connection.execute("PRAGMA foreign_keys = ON")
-    return connection
-
-
-# --------------------------------------------------
-# DASHBOARD PAGE
+# DASHBOARD
 # --------------------------------------------------
 
 @app.route("/")
@@ -164,7 +151,6 @@ def edit_client(client_id):
             )
 
             connection.commit()
-
             return redirect(url_for("clients_page"))
 
         return render_template(
@@ -196,7 +182,6 @@ def delete_client(client_id):
         if client is None:
             return "Client not found.", 404
 
-        # Prevent deletion if projects are linked to this client.
         project = connection.execute(
             """
             SELECT id
@@ -276,21 +261,10 @@ def add_project():
         "project_name", ""
     ).strip()
 
-    client_id = request.form.get(
-        "client_id", type=int
-    )
-
-    budget_text = request.form.get(
-        "budget", "0"
-    ).strip()
-
-    status = request.form.get(
-        "status", "Active"
-    ).strip()
-
-    deadline = request.form.get(
-        "deadline", ""
-    ).strip()
+    client_id = request.form.get("client_id", type=int)
+    budget_text = request.form.get("budget", "0").strip()
+    status = request.form.get("status", "Active").strip()
+    deadline = request.form.get("deadline", "").strip()
 
     if not project_name:
         return "Project name is required.", 400
@@ -373,21 +347,10 @@ def edit_project(project_id):
                 "project_name", ""
             ).strip()
 
-            client_id = request.form.get(
-                "client_id", type=int
-            )
-
-            budget_text = request.form.get(
-                "budget", "0"
-            ).strip()
-
-            status = request.form.get(
-                "status", ""
-            ).strip()
-
-            deadline = request.form.get(
-                "deadline", ""
-            ).strip()
+            client_id = request.form.get("client_id", type=int)
+            budget_text = request.form.get("budget", "0").strip()
+            status = request.form.get("status", "").strip()
+            deadline = request.form.get("deadline", "").strip()
 
             if not project_name:
                 return "Project name is required.", 400
@@ -395,11 +358,7 @@ def edit_project(project_id):
             if not client_id:
                 return "Please select a client.", 400
 
-            if status not in [
-                "Active",
-                "Completed",
-                "On Hold"
-            ]:
+            if status not in ["Active", "Completed", "On Hold"]:
                 return "Invalid project status.", 400
 
             try:
@@ -440,7 +399,6 @@ def edit_project(project_id):
             )
 
             connection.commit()
-
             return redirect(url_for("projects_page"))
 
         return render_template(
@@ -550,11 +508,11 @@ def dashboard_api():
             ]
         })
 
-    except sqlite3.Error:
-        app.logger.exception("Database error")
+    except Exception:
+        app.logger.exception("Dashboard database error")
 
         return jsonify({
-            "error": "Database error"
+            "error": "Dashboard data could not be loaded."
         }), 500
 
     finally:
